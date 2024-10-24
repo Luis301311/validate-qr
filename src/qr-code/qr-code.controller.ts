@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Headers, HttpException, HttpStatus, Body  } from '@nestjs/common';
 import { QrCodeService } from './qr-code.service';
 import { CreateQrCodeDto } from './dto/create-qr-code.dto';
-import { UpdateQrCodeDto } from './dto/update-qr-code.dto';
 
 @Controller('qr-code')
 export class QrCodeController {
@@ -10,14 +9,18 @@ export class QrCodeController {
 
   @Post('generate')
   async create(@Body() createQrCodeDto: CreateQrCodeDto) {
-    console.log(createQrCodeDto)
     const qrImage = await this.qrCodeService.generateQr(createQrCodeDto);
     return { qrImage };
   }
 
 
   @Post('validate')
-  validateQr(@Body() body: { qrCodeData: string }) {
-    return this.qrCodeService.validarQr(body.qrCodeData);
+  async validateQr(@Headers('authorization') authHeader: string) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new HttpException('Authorization header missing or invalid', HttpStatus.UNAUTHORIZED);
+    }
+
+    const token = authHeader.split(' ')[1]; // Extraer el token del encabezado
+    return await this.qrCodeService.validarQr(token);
   }
 }

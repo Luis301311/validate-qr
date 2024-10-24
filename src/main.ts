@@ -16,7 +16,7 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Si necesitas enviar cookies
   });
-   // Usar el puerto de la variable de entorno o el puerto 3000 por defecto
+  
    const PORT = process.env.PORT || 3000;
 
    await app.listen(PORT, () => {

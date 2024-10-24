@@ -1,25 +1,19 @@
 import { Injectable, HttpException, HttpStatus, Body } from '@nestjs/common';
 import { CreateQrCodeDto } from './dto/create-qr-code.dto';
 import * as QRCode from 'qrcode';
-import { json } from 'stream/consumers';
+import { AuthService } from 'src/auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class QrCodeService {
-  private students = [
-    { name: 'Juan Perez', id: '12345678' },
-    { name: 'Maria Lopez', id: '87654321' },
-    { name: 'Carlos Garcia', id: '11223344' },
-    { name: 'Laura Martinez', id: '55667788' },
-    { name: 'Ana Torres', id: '99887766' },
-  ];
+  constructor(private readonly authService: AuthService, private readonly jwtService: JwtService,) {}
+
 
   async generateQr(createQrCodeDto: CreateQrCodeDto): Promise<string> {
     try {
-      const validateStudent = this.buscarEstudiante(createQrCodeDto.name, createQrCodeDto.id);
-      if (!validateStudent) {
-        throw new HttpException('Estudiante no encontrado', HttpStatus.NOT_FOUND);
-      }
-      const data = JSON.stringify(createQrCodeDto);
+      const token =  await this.authService.login(createQrCodeDto);
+      console.log("Toke", token);
+      const data = JSON.stringify(token.access_token);
       const qr = await QRCode.toDataURL(data);
       return qr;
     } catch (error) {
@@ -27,24 +21,21 @@ export class QrCodeService {
     }
   }
 
-  async validarQr(qrCodeData: string): Promise<boolean> {
+
+
+
+  async validarQr(token: string) {
     try {
-      const json = JSON.parse(qrCodeData);
-      const { name, id } = json;
-  
-      // Buscar el estudiante
-      const validateStudent = this.buscarEstudiante(name, id);
-      return validateStudent !== undefined; 
-    } catch (error) {
-      console.error("Error al validar el código QR:", error);
-      throw new Error('Error al validar el código QR');
+      const decodedToken = this.jwtService.verify(token); // Verifica el token
+
+      return {
+        message: 'Token validado con éxito',
+        userId: decodedToken.id, // Suponiendo que el ID del usuario está en el token
+        name: decodedToken.name, // Y el nombre también
+      };
+    } catch (err) {
+      throw new HttpException('Token inválido', HttpStatus.UNAUTHORIZED);
     }
   }
   
-
-  private buscarEstudiante(name: string, id: string) {
-    return this.students.find(
-      estudiante => estudiante.name === name && estudiante.id === id
-    );
-  }
 }

@@ -7,5 +7,5 @@ export class CreateQrCodeDto {
 
   @IsString()
   @IsNotEmpty()
-  name: string;
+  password: string;
 }
