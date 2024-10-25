@@ -12,9 +12,15 @@ export class QrCodeService {
   async generateQr(createQrCodeDto: CreateQrCodeDto): Promise<string> {
     try {
       const token =  await this.authService.login(createQrCodeDto);
-      console.log("Toke", token);
-      const data = JSON.stringify(token.access_token);
-      const qr = await QRCode.toDataURL(data);
+      const decodedToken = this.jwtService.verify(token.access_token);
+      const qrdata = {
+        access_token: token,
+        id: decodedToken.id,
+        name: decodedToken.name,  // Agregar más datos al token, si es necesario
+      }
+      console.log("Toke", qrdata);
+      const rqdataJson = JSON.stringify(qrdata);
+      const qr = await QRCode.toDataURL(rqdataJson);
       return qr;
     } catch (error) {
       throw new HttpException('Estudiante no encontrado', HttpStatus.NOT_FOUND);
