@@ -17,7 +17,7 @@ export class Student {
 
   @Column({ length: 15, nullable: true })
   phone: string; 
-/* 
+
   @Column({ default: true })
-  isActive: boolean; */
+  isActive: boolean;
 }
