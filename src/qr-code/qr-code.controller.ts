@@ -1,4 +1,4 @@
-import { Controller, Post, Headers, HttpException, HttpStatus, Body  } from '@nestjs/common';
+import { Controller, Post, Headers, HttpException, HttpStatus, Body, Param  } from '@nestjs/common';
 import { QrCodeService } from './qr-code.service';
 import { CreateQrCodeDto } from './dto/create-qr-code.dto';
 
@@ -7,11 +7,14 @@ export class QrCodeController {
   constructor(private readonly qrCodeService: QrCodeService) {}
 
 
-  @Post('generate')
-  async create(@Body() token: String) {
+  @Post('generate/:token')
+  async create(@Param('token') token: string) {
+    console.log(token); // Esto imprimirá solo el token, por ejemplo: 12312312
     const qrImage = await this.qrCodeService.generateQr(token);
     return { qrImage };
   }
+  
+  
 
 
   @Post('validate')

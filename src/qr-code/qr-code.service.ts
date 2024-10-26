@@ -9,8 +9,9 @@ export class QrCodeService {
   constructor(private readonly authService: AuthService, private readonly jwtService: JwtService,) {}
 
 
-  async generateQr(token: String): Promise<string> {
+  async generateQr(token: string): Promise<string> {
     try {
+      
       const rqdataJson = JSON.stringify(token);
       const qr = await QRCode.toDataURL(rqdataJson);
       return qr;
