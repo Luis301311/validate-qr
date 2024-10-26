@@ -9,17 +9,9 @@ export class QrCodeService {
   constructor(private readonly authService: AuthService, private readonly jwtService: JwtService,) {}
 
 
-  async generateQr(createQrCodeDto: CreateQrCodeDto): Promise<string> {
+  async generateQr(token: String): Promise<string> {
     try {
-      const token =  await this.authService.login(createQrCodeDto);
-      const decodedToken = this.jwtService.verify(token.access_token);
-      const qrdata = {
-        access_token: token,
-        id: decodedToken.id,
-        name: decodedToken.name,  // Agregar más datos al token, si es necesario
-      }
-      console.log("Toke", qrdata);
-      const rqdataJson = JSON.stringify(qrdata);
+      const rqdataJson = JSON.stringify(token);
       const qr = await QRCode.toDataURL(rqdataJson);
       return qr;
     } catch (error) {

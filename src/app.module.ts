@@ -17,5 +17,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true,
     }),
     QrCodeModule, StudentsModule, AuthModule],
+
 })
-export class AppModule {}
+export class AppModule {
+
+  
+}

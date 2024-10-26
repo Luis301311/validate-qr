@@ -8,8 +8,8 @@ export class QrCodeController {
 
 
   @Post('generate')
-  async create(@Body() createQrCodeDto: CreateQrCodeDto) {
-    const qrImage = await this.qrCodeService.generateQr(createQrCodeDto);
+  async create(@Body() token: String) {
+    const qrImage = await this.qrCodeService.generateQr(token);
     return { qrImage };
   }
 

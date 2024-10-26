@@ -5,6 +5,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Student } from 'src/students/entities/student.entity';
+import { JwtStrategy } from './jwt.strategy';
 @Module({
   imports : [
     TypeOrmModule.forFeature([Student]), 
@@ -13,7 +14,7 @@ import { Student } from 'src/students/entities/student.entity';
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '8h' },
     })],
-  providers: [AuthService]  ,
+  providers: [AuthService, JwtStrategy]  ,
   controllers: [AuthController],
   exports : [AuthService],
 })

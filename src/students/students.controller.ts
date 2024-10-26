@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UnauthorizedException } from '@nestjs/common';
 import { StudentsService } from './students.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-authguard';
+
 
 @Controller('students')
 export class StudentsController {
@@ -14,13 +16,18 @@ export class StudentsController {
   }
 
   @Get()
+/*   @UseGuards(JwtAuthGuard) */
   findAll() {
     return this.studentsService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.studentsService.findOne(id);
+  
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/user/profile')
+  getUserInfo(@Param('userId') userId: string, @Req() req) {
+    const loggedInUserId = req.user.id; 
+    return this.studentsService.findOne(loggedInUserId);
   }
 
   @Patch(':id')
