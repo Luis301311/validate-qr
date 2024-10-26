@@ -1,23 +1,37 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
-export class Student {
+export class Students {
 
   @PrimaryColumn({ length: 20 })
   id: string; 
 
+  @Column()
+  password: string; 
+
   @Column({ length: 100 })
   name: string; 
+
+
+  @Column({ length: 100 })
+  lastname: string;
   
   @Column({ unique: true })
   email: string;  
 
-  @Column()
-  password: string; 
+  @Column({ nullable: true })
+  cohort1: string;
 
-  @Column({ length: 15, nullable: true })
-  phone: string; 
+  @Column({ nullable: true })
+  course1: string;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({ nullable: true })
+  type1: string;
+
+  @Column({ length: 50, nullable: true })
+  city: string;
+
+  @Column({ length: 50, nullable: true })
+  country: string;
+
 }
