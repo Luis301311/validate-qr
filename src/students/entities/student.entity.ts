@@ -33,5 +33,4 @@ export class Students {
 
   @Column({ length: 50, nullable: true })
   country: string;
-
 }
