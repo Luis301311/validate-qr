@@ -4,11 +4,11 @@ import { jwtConstants } from './jwt.constants';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Student } from 'src/students/entities/student.entity';
+import { Students } from 'src/students/entities/student.entity';
 import { JwtStrategy } from './jwt.strategy';
 @Module({
   imports : [
-    TypeOrmModule.forFeature([Student]), 
+    TypeOrmModule.forFeature([Students]), 
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,

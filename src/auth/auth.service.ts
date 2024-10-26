@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { JwtService } from '@nestjs/jwt'; 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Student } from 'src/students/entities/student.entity';
+import { Students } from 'src/students/entities/student.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 
@@ -10,19 +10,19 @@ import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class AuthService {
   constructor ( 
-    @InjectRepository(Student) private userRepository : Repository<Student>,
+    @InjectRepository(Students) private userRepository : Repository<Students>,
     private jwtServices: JwtService
 ){}
 
   async login(createAuthDto: any) {
     try{
       const { id, password } = createAuthDto;
-      const validateStudent = await this.userRepository.findOne({where : {id} })
+      const validateStudent = await this.userRepository.findOne({where : {id: id} })
       if (!validateStudent) {
         throw new HttpException('Estudiante no encontrado', HttpStatus.NOT_FOUND);
       }
       const isPasswordValid = await bcrypt.compare(password, validateStudent.password);
-      if (!isPasswordValid) {
+      if (password !== validateStudent.password) {
         throw new HttpException('Contraseña incorrecta', HttpStatus.UNAUTHORIZED);
       }
       const payload = { id: validateStudent.id , name : validateStudent.name};
